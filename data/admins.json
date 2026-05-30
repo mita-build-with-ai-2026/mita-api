@@ -1,0 +1,12 @@
+[
+  {
+    "id": "66fd302f-a6fe-4806-92ad-4e3993fd6bb7",
+    "nombre": "Admin Mita",
+    "email": "admin@mita.ai",
+    "passwordHash": "$2a$10$nZzwOcT7DY87wf5mT9W8AOE3R6LMc9aA4d5zT7tF3hkPOe3TalO4G",
+    "rol": "ADMIN",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.154Z",
+    "ultimoAccesoEn": null
+  }
+]
