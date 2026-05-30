@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "nombre": "Demo Mita",
+    "urlBase": "https://demo.mita.ai",
+    "tipoFuente": "DEMO",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 2,
+    "nombre": "Facebook Marketplace SCZ",
+    "urlBase": "https://facebook.com/marketplace/santa-cruz",
+    "tipoFuente": "FACEBOOK",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  }
+]
