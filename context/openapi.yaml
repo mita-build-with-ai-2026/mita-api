@@ -1,0 +1,759 @@
+openapi: 3.0.3
+
+info:
+  title: Mita API
+  version: 0.2.0
+  description: API MVP de Mita, agente inmobiliario con IA para encontrar espacios residenciales, comerciales, productivos y logísticos en Santa Cruz.
+
+servers:
+  - url: http://localhost:3000
+    description: Local Node.js / Express API
+
+tags:
+  - name: Auth
+  - name: Metadata
+  - name: Properties
+  - name: Imports
+  - name: AI
+  - name: RAG
+  - name: Leads
+  - name: Demo
+
+paths:
+  /api/health:
+    get:
+      tags: [Metadata]
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  example: admin@mita.ai
+                password:
+                  type: string
+                  example: admin123
+      responses:
+        "200":
+          description: Login correcto
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Credenciales inválidas
+
+  /api/auth/me:
+    get:
+      tags: [Auth]
+      summary: Obtener usuario autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Usuario actual
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthMeResponse"
+        "401":
+          description: No autorizado
+
+  /api/metadata/zones:
+    get:
+      tags: [Metadata]
+      summary: Listar zonas de Santa Cruz
+      responses:
+        "200":
+          description: Lista de zonas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  zones:
+                    type: array
+                    items:
+                      type: string
+
+  /api/metadata/search-examples:
+    get:
+      tags: [Metadata]
+      summary: Obtener ejemplos de búsqueda
+      responses:
+        "200":
+          description: Ejemplos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  examples:
+                    type: array
+                    items:
+                      type: string
+
+  /api/properties:
+    get:
+      tags: [Properties]
+      summary: Listar propiedades
+      parameters:
+        - in: query
+          name: zone
+          schema:
+            type: string
+        - in: query
+          name: maxPrice
+          schema:
+            type: number
+        - in: query
+          name: currency
+          schema:
+            type: string
+            enum: [USD, BOB]
+        - in: query
+          name: propertyType
+          schema:
+            type: string
+            enum: [DEPARTAMENTO, GARZONIER, CASA, HABITACION, MONOAMBIENTE, OFICINA, LOCAL_COMERCIAL, DEPOSITO, GALPON, TALLER, ESPACIO_LOGISTICO, TERRENO, OTRO]
+        - in: query
+          name: usageType
+          schema:
+            type: string
+            enum: [RESIDENCIAL, COMERCIAL, INDUSTRIAL, LOGISTICO, OFICINA, MIXTO, OTRO]
+        - in: query
+          name: minAreaM2
+          schema:
+            type: number
+        - in: query
+          name: aptFor
+          schema:
+            type: string
+        - in: query
+          name: bedrooms
+          schema:
+            type: integer
+        - in: query
+          name: hasGarage
+          schema:
+            type: boolean
+        - in: query
+          name: petsAllowed
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Propiedades
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyListResponse"
+
+    post:
+      tags: [Properties]
+      summary: Crear propiedad
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePropertyRequest"
+      responses:
+        "201":
+          description: Propiedad creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyResponse"
+        "401":
+          description: No autorizado
+
+  /api/properties/{propertyId}:
+    get:
+      tags: [Properties]
+      summary: Obtener propiedad por ID
+      parameters:
+        - in: path
+          name: propertyId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Propiedad
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyResponse"
+        "404":
+          description: Propiedad no encontrada
+
+    patch:
+      tags: [Properties]
+      summary: Actualizar propiedad
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: propertyId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: Propiedad actualizada
+        "401":
+          description: No autorizado
+        "404":
+          description: Propiedad no encontrada
+
+  /api/sources:
+    get:
+      tags: [Imports]
+      summary: Listar fuentes de propiedades
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Fuentes
+
+  /api/imports:
+    get:
+      tags: [Imports]
+      summary: Listar importaciones de propiedades
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Importaciones
+
+  /api/imports/run:
+    post:
+      tags: [Imports]
+      summary: Ejecutar importación/scraper de propiedades
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sourceId]
+              properties:
+                sourceId:
+                  type: integer
+                  example: 1
+                url:
+                  type: string
+                  example: https://fuente-demo.com/alquileres
+                limit:
+                  type: integer
+                  example: 30
+      responses:
+        "201":
+          description: Importación ejecutada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportResponse"
+
+  /api/ai/search:
+    post:
+      tags: [AI]
+      summary: Buscar espacios con lenguaje natural
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query:
+                  type: string
+                  example: Busco un local comercial cerca de una avenida transitada, máximo 800 dólares, ideal para abrir una cafetería.
+                limit:
+                  type: integer
+                  example: 10
+      responses:
+        "200":
+          description: Resultados con IA
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AISearchResponse"
+
+  /api/ai/compare:
+    post:
+      tags: [AI]
+      summary: Comparar propiedades
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query, propertyIds]
+              properties:
+                query:
+                  type: string
+                  example: Cuál me conviene más si quiero abrir una cafetería pequeña y necesito buena visibilidad?
+                propertyIds:
+                  type: array
+                  minItems: 2
+                  maxItems: 3
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Comparación generada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AICompareResponse"
+
+  /api/ai/enhance-listing:
+    post:
+      tags: [AI]
+      summary: Mejorar publicación inmobiliaria
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rawText]
+              properties:
+                rawText:
+                  type: string
+                  example: alquilo local zona norte 800$ ideal negocio avenida transitada baño privado
+      responses:
+        "200":
+          description: Publicación mejorada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIEnhanceListingResponse"
+
+  /api/rag/reindex:
+    post:
+      tags: [RAG]
+      summary: Regenerar embeddings de propiedades
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Reindexación completa
+
+  /api/rag/search:
+    post:
+      tags: [RAG]
+      summary: Probar búsqueda semántica
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query:
+                  type: string
+                limit:
+                  type: integer
+                  example: 10
+      responses:
+        "200":
+          description: Resultados semánticos
+
+  /api/leads:
+    post:
+      tags: [Leads]
+      summary: Registrar contacto/lead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [propertyId, origen]
+              properties:
+                propertyId:
+                  type: string
+                origen:
+                  type: string
+                  enum: [WHATSAPP_CLICK, FORMULARIO_CONTACTO, DEMO]
+                nombreUsuario:
+                  type: string
+                  nullable: true
+                telefonoUsuario:
+                  type: string
+                  nullable: true
+                mensaje:
+                  type: string
+      responses:
+        "201":
+          description: Lead creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadResponse"
+
+    get:
+      tags: [Leads]
+      summary: Listar leads
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Leads
+
+  /api/demo/scenarios:
+    get:
+      tags: [Demo]
+      summary: Obtener escenarios de demo
+      responses:
+        "200":
+          description: Escenarios demo
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserAdmin"
+
+    AuthMeResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserAdmin"
+
+    UserAdmin:
+      type: object
+      properties:
+        id:
+          type: string
+        nombre:
+          type: string
+        email:
+          type: string
+        rol:
+          type: string
+          enum: [ADMIN, OPERADOR]
+
+    Property:
+      type: object
+      properties:
+        id:
+          type: string
+        titulo:
+          type: string
+        descripcion:
+          type: string
+        tipoPropiedad:
+          type: string
+          enum: [DEPARTAMENTO, GARZONIER, CASA, HABITACION, MONOAMBIENTE, OFICINA, LOCAL_COMERCIAL, DEPOSITO, GALPON, TALLER, ESPACIO_LOGISTICO, TERRENO, OTRO]
+        tipoUsoEspacio:
+          type: string
+          enum: [RESIDENCIAL, COMERCIAL, INDUSTRIAL, LOGISTICO, OFICINA, MIXTO, OTRO]
+        ciudad:
+          type: string
+        zona:
+          type: string
+        precio:
+          type: number
+        moneda:
+          type: string
+          enum: [USD, BOB]
+        precioBs:
+          type: number
+        cantidadHabitaciones:
+          type: integer
+        cantidadBanos:
+          type: integer
+        areaM2:
+          type: number
+        tieneGaraje:
+          type: boolean
+        estaAmoblada:
+          type: boolean
+        aceptaMascotas:
+          type: boolean
+        expensasIncluidas:
+          type: boolean
+        montoExpensas:
+          type: number
+        comodidades:
+          type: array
+          items:
+            type: string
+        aptoPara:
+          type: array
+          items:
+            type: string
+        caracteristicasOperativas:
+          type: object
+          additionalProperties: true
+        requisitosFaltantes:
+          type: array
+          items:
+            type: string
+        nombreContacto:
+          type: string
+        telefonoContacto:
+          type: string
+        urlFuente:
+          type: string
+        urlImagen:
+          type: string
+        textoBusqueda:
+          type: string
+        estado:
+          type: string
+
+    CreatePropertyRequest:
+      type: object
+      required: [titulo, tipoPropiedad, ciudad, zona, precio, moneda]
+      properties:
+        titulo:
+          type: string
+        descripcion:
+          type: string
+        tipoPropiedad:
+          type: string
+          enum: [DEPARTAMENTO, GARZONIER, CASA, HABITACION, MONOAMBIENTE, OFICINA, LOCAL_COMERCIAL, DEPOSITO, GALPON, TALLER, ESPACIO_LOGISTICO, TERRENO, OTRO]
+        tipoUsoEspacio:
+          type: string
+          enum: [RESIDENCIAL, COMERCIAL, INDUSTRIAL, LOGISTICO, OFICINA, MIXTO, OTRO]
+        ciudad:
+          type: string
+          example: Santa Cruz de la Sierra
+        zona:
+          type: string
+        precio:
+          type: number
+        moneda:
+          type: string
+          enum: [USD, BOB]
+        cantidadHabitaciones:
+          type: integer
+        cantidadBanos:
+          type: integer
+        tieneGaraje:
+          type: boolean
+        estaAmoblada:
+          type: boolean
+        aceptaMascotas:
+          type: boolean
+        telefonoContacto:
+          type: string
+        aptoPara:
+          type: array
+          items:
+            type: string
+        caracteristicasOperativas:
+          type: object
+          additionalProperties: true
+        requisitosFaltantes:
+          type: array
+          items:
+            type: string
+
+    PropertyResponse:
+      type: object
+      properties:
+        property:
+          $ref: "#/components/schemas/Property"
+
+    PropertyListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Property"
+
+    ImportResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        estado:
+          type: string
+        totalEncontrados:
+          type: integer
+        totalImportados:
+          type: integer
+        totalFallidos:
+          type: integer
+
+    SearchCriteria:
+      type: object
+      properties:
+        consultaCruda:
+          type: string
+        tipoPropiedad:
+          type: string
+        tipoUsoEspacio:
+          type: string
+        zonas:
+          type: array
+          items:
+            type: string
+        precioMaximo:
+          type: number
+        moneda:
+          type: string
+        cantidadHabitaciones:
+          type: integer
+        areaM2:
+          type: number
+        tieneGaraje:
+          type: boolean
+        aceptaMascotas:
+          type: boolean
+        aptoPara:
+          type: array
+          items:
+            type: string
+        caracteristicasOperativas:
+          type: object
+          additionalProperties: true
+        prioridades:
+          type: array
+          items:
+            type: string
+
+    MatchResult:
+      type: object
+      properties:
+        property:
+          $ref: "#/components/schemas/Property"
+        puntajeCoincidencia:
+          type: integer
+        similitudRag:
+          type: number
+        resumen:
+          type: string
+        razones:
+          type: array
+          items:
+            type: string
+        advertencias:
+          type: array
+          items:
+            type: string
+        informacionFaltante:
+          type: array
+          items:
+            type: string
+        recomendacion:
+          type: string
+        etiquetaCorta:
+          type: string
+
+    AISearchResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        criteria:
+          $ref: "#/components/schemas/SearchCriteria"
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchResult"
+
+    AICompareResponse:
+      type: object
+      properties:
+        recommendedPropertyId:
+          type: string
+        decisionSummary:
+          type: string
+        comparisonTable:
+          type: array
+          items:
+            type: object
+        tradeoffs:
+          type: array
+          items:
+            type: string
+        finalRecommendation:
+          type: string
+
+    AIEnhanceListingResponse:
+      type: object
+      properties:
+        titulo:
+          type: string
+        descripcionLimpia:
+          type: string
+        propertyDraft:
+          type: object
+        caracteristicas:
+          type: array
+          items:
+            type: string
+        informacionFaltante:
+          type: array
+          items:
+            type: string
+        preguntasSugeridas:
+          type: array
+          items:
+            type: string
+        versionWhatsapp:
+          type: string
+        versionFacebook:
+          type: string
+
+    LeadResponse:
+      type: object
+      properties:
+        lead:
+          type: object
+          properties:
+            id:
+              type: string
+            propertyId:
+              type: string
+            urlWhatsapp:
+              type: string
