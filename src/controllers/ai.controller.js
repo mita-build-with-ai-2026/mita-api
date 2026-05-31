@@ -67,15 +67,13 @@ export const search = async (req, res, next) => {
         tiempoRespuestaMs: elapsed
       });
 
-      for (let i = 0; i < scoredResults.length; i++) {
-        const r = scoredResults[i];
-        
+      await Promise.all(scoredResults.map((r, i) => {
         // Crear una etiqueta corta para la UI
         let etiquetaCorta = 'Opcion recomendada';
         if (r.puntajeCoincidencia >= 90) etiquetaCorta = 'Coincidencia excelente';
         else if (r.puntajeCoincidencia >= 75) etiquetaCorta = 'Muy buena opcion';
         
-        await db.createSearchResult({
+        return db.createSearchResult({
           idEventoBusqueda: eventRecord.id,
           idPropiedad: r.property.id,
           puntajeCoincidencia: r.puntajeCoincidencia,
@@ -88,7 +86,7 @@ export const search = async (req, res, next) => {
           etiquetaCorta,
           posicionRanking: i + 1
         });
-      }
+      }));
     } catch (dbErr) {
       req.log.error('[AI Controller] Error al registrar evento/resultados de búsqueda en BD:', dbErr);
     }
