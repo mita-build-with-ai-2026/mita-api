@@ -25,13 +25,30 @@ function sign(payload, secret, expiresInSeconds = 604800) {
 }
 
 function verify(token, secret) {
+  if (token === 'mock-jwt-token-mita-ai-2026') {
+    throw new Error('Se detectó el token de simulación (mock-jwt-token-mita-ai-2026) que no es válido en el backend real. Por favor, limpie el almacenamiento local (localStorage) del navegador o cierre sesión e inicie sesión de nuevo para generar un token válido.');
+  }
+  if (token === 'su_token_jwt_aqui') {
+    throw new Error('Se recibió el valor de plantilla "su_token_jwt_aqui" desde Postman. Ejecute primero la petición POST /api/auth/login (Admin Login) en Postman para que el script actualice la variable global/entorno {{token}}, o copie el accessToken de la respuesta y péguelo manualmente en sus variables.');
+  }
   const parts = token.split('.');
-  if (parts.length !== 3) throw new Error('Token inválido');
+  if (parts.length !== 3) {
+    throw new Error(`El token no tiene los 3 componentes del formato JWT (encontrados ${parts.length} componentes). Asegúrese de copiar el token completo.`);
+  }
   const [header, payload, signature] = parts;
   const expectedSig = createHmac('sha256', secret).update(`${header}.${payload}`).digest('base64url');
-  if (expectedSig !== signature) throw new Error('Firma inválida');
-  const decoded = JSON.parse(base64urlDecode(payload));
-  if (decoded.exp < Math.floor(Date.now() / 1000)) throw new Error('Token expirado');
+  if (expectedSig !== signature) {
+    throw new Error('La firma digital del token no coincide (Firma inválida). Esto ocurre si el JWT_SECRET cambió o el token fue alterado.');
+  }
+  let decoded;
+  try {
+    decoded = JSON.parse(base64urlDecode(payload));
+  } catch (e) {
+    throw new Error(`El payload del token no se pudo decodificar como JSON válido: ${e.message}`);
+  }
+  if (decoded.exp < Math.floor(Date.now() / 1000)) {
+    throw new Error('El token de sesión ha expirado.');
+  }
   return decoded;
 }
 
@@ -49,20 +66,52 @@ export function verifyToken(token) {
 // --- Middleware requireAuth ---
 
 export const requireAuth = async (req, res, next) => {
+  const authHeader = req.headers['authorization'];
   try {
-    const authHeader = req.headers['authorization'];
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ status: 'error', message: 'Token de autorización requerido.' });
+      const msg = 'Token de autorización requerido en la cabecera Authorization con formato Bearer.';
+      if (req.log) {
+        req.log.warn(`Autenticación fallida: Cabecera Authorization incorrecta o ausente. Recibido: "${authHeader}"`);
+      } else {
+        console.warn(`[WARN] Autenticación fallida: Cabecera Authorization incorrecta o ausente. Recibido: "${authHeader}"`);
+      }
+      return res.status(401).json({ status: 'error', message: msg });
     }
-    const token = authHeader.split(' ')[1];
+    
+    // Separar usando expresiones regulares para tolerar múltiples espacios
+    const parts = authHeader.trim().split(/\s+/);
+    if (parts.length < 2 || parts[0].toLowerCase() !== 'bearer') {
+      const msg = 'Formato de cabecera Authorization incorrecto. Debe ser "Bearer <token>".';
+      if (req.log) {
+        req.log.warn(`Autenticación fallida: Formato de Bearer incorrecto. Recibido: "${authHeader}"`);
+      } else {
+        console.warn(`[WARN] Autenticación fallida: Formato de Bearer incorrecto. Recibido: "${authHeader}"`);
+      }
+      return res.status(401).json({ status: 'error', message: msg });
+    }
+    
+    const token = parts[1].trim();
     const decoded = verifyToken(token);
+    
     const admin = await db.findAdminById(decoded.id);
     if (!admin || !admin.activo) {
-      return res.status(401).json({ status: 'error', message: 'Usuario no autorizado.' });
+      const msg = 'Usuario administrador no encontrado o inactivo.';
+      if (req.log) {
+        req.log.warn(`Autenticación fallida: Admin no encontrado o inactivo para el ID: ${decoded.id}`);
+      } else {
+        console.warn(`[WARN] Autenticación fallida: Admin no encontrado o inactivo para el ID: ${decoded.id}`);
+      }
+      return res.status(401).json({ status: 'error', message: msg });
     }
+    
     req.admin = admin;
     next();
   } catch (err) {
+    if (req.log) {
+      req.log.warn(`Autenticación fallida (excepción): ${err.message}. Header recibido: "${authHeader}"`);
+    } else {
+      console.warn(`[WARN] Autenticación fallida (excepción): ${err.message}. Header recibido: "${authHeader}"`);
+    }
     return res.status(401).json({ status: 'error', message: `Token inválido: ${err.message}` });
   }
 };
