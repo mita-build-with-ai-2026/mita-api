@@ -3,7 +3,7 @@
  */
 import { db } from '../config/db.js';
 
-export const listProperties = (req, res, next) => {
+export const listProperties = async (req, res, next) => {
   try {
     const {
       zone,
@@ -30,7 +30,7 @@ export const listProperties = (req, res, next) => {
     if (hasGarage !== undefined) filters.hasGarage = hasGarage === 'true';
     if (petsAllowed !== undefined) filters.petsAllowed = petsAllowed === 'true';
 
-    const properties = db.getProperties(filters);
+    const properties = await db.getProperties(filters);
 
     res.status(200).json({
       data: properties,
@@ -41,10 +41,10 @@ export const listProperties = (req, res, next) => {
   }
 };
 
-export const getPropertyById = (req, res, next) => {
+export const getPropertyById = async (req, res, next) => {
   try {
     const { propertyId } = req.params;
-    const property = db.getPropertyById(propertyId);
+    const property = await db.getPropertyById(propertyId);
     if (!property) {
       return res.status(404).json({ status: 'error', message: 'Propiedad no encontrada.' });
     }
@@ -54,7 +54,7 @@ export const getPropertyById = (req, res, next) => {
   }
 };
 
-export const createProperty = (req, res, next) => {
+export const createProperty = async (req, res, next) => {
   try {
     const required = ['titulo', 'tipoPropiedad', 'ciudad', 'zona', 'precio', 'moneda'];
     const missing = required.filter((f) => req.body[f] === undefined || req.body[f] === null || req.body[f] === '');
@@ -62,7 +62,7 @@ export const createProperty = (req, res, next) => {
       return res.status(400).json({ status: 'error', message: `Campos requeridos faltantes: ${missing.join(', ')}` });
     }
 
-    const property = db.createProperty({
+    const property = await db.createProperty({
       ...req.body,
       idFuente: req.body.idFuente || 1,
     });
@@ -73,10 +73,10 @@ export const createProperty = (req, res, next) => {
   }
 };
 
-export const patchProperty = (req, res, next) => {
+export const patchProperty = async (req, res, next) => {
   try {
     const { propertyId } = req.params;
-    const updated = db.updateProperty(propertyId, req.body);
+    const updated = await db.updateProperty(propertyId, req.body);
     if (!updated) {
       return res.status(404).json({ status: 'error', message: 'Propiedad no encontrada.' });
     }

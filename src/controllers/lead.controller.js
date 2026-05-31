@@ -9,7 +9,7 @@ function buildWhatsappUrl(phone, message) {
   return `https://wa.me/${cleaned}?text=${encoded}`;
 }
 
-export const createLead = (req, res, next) => {
+export const createLead = async (req, res, next) => {
   try {
     const { propertyId, origen, nombreUsuario, telefonoUsuario, mensaje } = req.body;
 
@@ -22,7 +22,7 @@ export const createLead = (req, res, next) => {
       return res.status(400).json({ status: 'error', message: `origen debe ser: ${validOrigens.join(', ')}` });
     }
 
-    const property = db.getPropertyById(propertyId);
+    const property = await db.getPropertyById(propertyId);
     if (!property) {
       return res.status(404).json({ status: 'error', message: 'Propiedad no encontrada.' });
     }
@@ -36,7 +36,7 @@ export const createLead = (req, res, next) => {
       ? buildWhatsappUrl(property.telefonoContacto, whatsappMessage)
       : null;
 
-    const lead = db.createLead({
+    const lead = await db.createLead({
       propertyId,
       origen,
       nombreUsuario: nombreUsuario || null,
@@ -48,7 +48,7 @@ export const createLead = (req, res, next) => {
     res.status(201).json({
       lead: {
         id: lead.id,
-        propertyId: lead.propertyId,
+        propertyId: lead.idPropiedad,
         urlWhatsapp: lead.urlWhatsapp,
         creadoEn: lead.creadoEn,
       },
@@ -58,9 +58,9 @@ export const createLead = (req, res, next) => {
   }
 };
 
-export const listLeads = (req, res, next) => {
+export const listLeads = async (req, res, next) => {
   try {
-    const leads = db.getLeads();
+    const leads = await db.getLeads();
     res.status(200).json({ data: leads, total: leads.length });
   } catch (err) {
     next(err);

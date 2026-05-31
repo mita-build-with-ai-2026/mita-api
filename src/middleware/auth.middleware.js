@@ -48,7 +48,7 @@ export function verifyToken(token) {
 
 // --- Middleware requireAuth ---
 
-export const requireAuth = (req, res, next) => {
+export const requireAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -56,7 +56,7 @@ export const requireAuth = (req, res, next) => {
     }
     const token = authHeader.split(' ')[1];
     const decoded = verifyToken(token);
-    const admin = db.findAdminById(decoded.id);
+    const admin = await db.findAdminById(decoded.id);
     if (!admin || !admin.activo) {
       return res.status(401).json({ status: 'error', message: 'Usuario no autorizado.' });
     }
