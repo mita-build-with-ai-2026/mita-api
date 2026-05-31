@@ -81,7 +81,7 @@
 									"    console.log(\"Token guardado automáticamente en la variable 'token'\");",
 									"}"
 								],
-								"type": "javascript"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -798,7 +798,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"type": "javascript",
+				"type": "text/javascript",
 				"exec": [
 					""
 				]
@@ -807,7 +807,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"type": "javascript",
+				"type": "text/javascript",
 				"exec": [
 					""
 				]
