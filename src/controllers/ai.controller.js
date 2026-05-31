@@ -27,7 +27,8 @@ export const search = async (req, res, next) => {
         const scoreData = scoreProperty(p, criteria);
         return {
           property: p,
-          ...scoreData
+          ...scoreData,
+          reasons: scoreData.razones || []
         };
       })
       .filter((r) => r.puntajeCoincidencia > 30)

@@ -1,0 +1,834 @@
+{
+	"info": {
+		"_postman_id": "a2fd8dc3-a681-4126-9378-09d163358579",
+		"name": "Mita API - Collection",
+		"description": "Colección completa de Postman para interactuar con los endpoints del backend de Mita (Build With AI 2026). Incluye flujos de Autenticación, Búsqueda con IA, RAG, Scraper, Gestión de Inmuebles y Leads.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Utilitarios & Health",
+			"item": [
+				{
+					"name": "API Root Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/ping",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Health Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Autenticación",
+			"item": [
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();",
+									"if (responseJson.accessToken) {",
+									"    pm.environment.set(\"token\", responseJson.accessToken);",
+									"    pm.globals.set(\"token\", responseJson.accessToken);",
+									"    console.log(\"Token guardado automáticamente en la variable 'token'\");",
+									"}"
+								],
+								"type": "javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@mita.ai\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Me Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Metadata & Catálogos",
+			"item": [
+				{
+					"name": "Listar Zonas Activas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/metadata/zones",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"metadata",
+								"zones"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Ejemplos de Búsqueda",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/metadata/search-examples",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"metadata",
+								"search-examples"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Propiedades (CRUD)",
+			"item": [
+				{
+					"name": "Listar Propiedades (Con Filtros)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/properties?zone=Equipetrol&maxPrice=1500&propertyType=DEPARTAMENTO&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"properties"
+							],
+							"query": [
+								{
+									"key": "zone",
+									"value": "Equipetrol"
+								},
+								{
+									"key": "maxPrice",
+									"value": "1500"
+								},
+								{
+									"key": "propertyType",
+									"value": "DEPARTAMENTO"
+								},
+								{
+									"key": "usageType",
+									"value": "RESIDENCIAL",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle de una Propiedad",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/properties/{{propertyId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"properties",
+								"{{propertyId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Propiedad",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titulo\": \"Oficina de lujo equipada en Equipetrol\",\n    \"descripcion\": \"Excelente oficina de 80m2 con 2 ambientes, baño privado, kitchenette, parqueo y seguridad 24 horas.\",\n    \"tipoPropiedad\": \"OFICINA\",\n    \"tipoUsoEspacio\": \"OFICINA\",\n    \"zona\": \"Equipetrol\",\n    \"precio\": 900,\n    \"moneda\": \"USD\",\n    \"areaM2\": 80,\n    \"tieneGaraje\": true,\n    \"estaAmoblada\": false,\n    \"comodidades\": [\"Aire Acondicionado\", \"Kitchenette\", \"Seguridad 24h\", \"Ascensor\"],\n    \"aptoPara\": [\"consultorio\", \"oficina corporativa\", \"estudio juridico\"],\n    \"telefonoContacto\": \"77012345\",\n    \"nombreContacto\": \"Carlos Inmobiliaria\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/properties",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar Propiedad",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"precio\": 850,\n    \"titulo\": \"Oficina de lujo en Equipetrol - Precio Rebajado\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/properties/{{propertyId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"properties",
+								"{{propertyId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inteligencia Artificial (AI)",
+			"item": [
+				{
+					"name": "Búsqueda Conversacional Inteligente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"departamento en zona equipetrol de 2 dormitorios con balcon amoblado\",\n    \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ai/search",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"ai",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Comparador de Propiedades con IA",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"Busco un local comercial amplio con parqueo para abrir un cafe\",\n    \"propertyIds\": [\n        \"remplace-con-id-propiedad-1\",\n        \"remplace-con-id-propiedad-2\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ai/compare",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"ai",
+								"compare"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Normalizar Publicación / Estructurar Anuncio",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rawText\": \"alquilo dpto de 2 dorm amoblado zona norte edif moderno churrasquera piscina garaje 800 usd expensas incluidas cel 77345678\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ai/enhance-listing",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"ai",
+								"enhance-listing"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Descubrimiento de Fuentes Inmobiliarias (Grounding)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"alquiler locales comerciales santa cruz bolivia\",\n    \"city\": \"Santa Cruz de la Sierra\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ai/discover-sources",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"ai",
+								"discover-sources"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Analizar URLs y Extraer Inmuebles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"urls\": [\n        \"https://www.infocasas.com.bo/alquiler/oficinas/santa-cruz\"\n    ],\n    \"crawlListings\": true,\n    \"maxProperties\": 3\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ai/analyze-urls",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"ai",
+								"analyze-urls"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RAG (Búsqueda Vectorial pgvector)",
+			"item": [
+				{
+					"name": "Reindexar Embeddings de Propiedades",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rag/reindex",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"rag",
+								"reindex"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Búsqueda Semántica RAG (Coseno Similitud)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"galpon comercial amplio con energia trifasica y parqueo en zona industrial\",\n    \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/rag/search",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"rag",
+								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Scraping & Importación Masiva",
+			"item": [
+				{
+					"name": "Listar Fuentes de Importación",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/sources",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"sources"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Historial de Importaciones",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/imports",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"imports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ejecutar Importación por Fuente/URL",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourceId\": 1,\n    \"url\": \"https://www.infocasas.com.bo/alquiler/oficinas/santa-cruz\",\n    \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/imports/run",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"imports",
+								"run"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Auto Descubrimiento y Scraping Masivo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"urlLimit\": 3,\n    \"perUrlLimit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/imports/auto-discover-and-import",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"imports",
+								"auto-discover-and-import"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Leads de Contacto",
+			"item": [
+				{
+					"name": "Crear Lead de Contacto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"propertyId\": \"coloque-un-id-de-propiedad-valido\",\n    \"origen\": \"WHATSAPP_CLICK\",\n    \"nombreUsuario\": \"Daniel Cliente\",\n    \"telefonoUsuario\": \"59178945612\",\n    \"mensaje\": \"Hola, estoy interesado en recibir información sobre este departamento. ¿Sigue disponible?\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/leads",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leads"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Leads de Contacto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/leads",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leads"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Demos & Escenarios",
+			"item": [
+				{
+					"name": "Obtener Escenarios Demo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/demo/scenarios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"demo",
+								"scenarios"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "su_token_jwt_aqui",
+			"type": "string"
+		},
+		{
+			"key": "propertyId",
+			"value": "coloque_id_aqui",
+			"type": "string"
+		}
+	]
+}
