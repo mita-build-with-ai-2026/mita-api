@@ -215,7 +215,14 @@ export const db = {
 
   // Importaciones
   async getImports() {
-    const res = await pool.query('SELECT * FROM "ImportacionPropiedades"');
+    const res = await pool.query(`
+      SELECT i.*, 
+             COALESCE(f."nombre", 'Descubrimiento Automático') AS "fuente",
+             i."iniciadaEn" AS "fecha"
+      FROM "ImportacionPropiedades" i
+      LEFT JOIN "FuentePropiedad" f ON i."idFuente" = f."id"
+      ORDER BY i."iniciadaEn" DESC
+    `);
     return res.rows;
   },
 

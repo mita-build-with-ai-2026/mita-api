@@ -348,19 +348,18 @@ export function aiCompare(query, properties) {
 
   const best = scored[0];
   const comparisonTable = scored.map((r) => ({
-    id: r.property.id,
-    titulo: r.property.titulo,
-    zona: r.property.zona,
-    precio: `$${r.property.precio} ${r.property.moneda}`,
-    areaM2: r.property.areaM2 ? `${r.property.areaM2}m²` : 'No especificado',
-    puntaje: `${r.puntajeCoincidencia}%`,
-    etiqueta: r.etiquetaCorta,
-    ventajas: r.razones.slice(0, 2),
-    desventajas: r.advertencias.slice(0, 2),
+    "Propiedad": r.property.titulo,
+    "Precio Mensual": `$${r.property.precio} ${r.property.moneda}`,
+    "Área Total": r.property.areaM2 ? `${r.property.areaM2} m²` : 'No especificado',
+    "Zona": r.property.zona,
+    "Tipo de Uso": r.property.tipoUsoEspacio,
+    "Trifásica": r.property.caracteristicasOperativas?.energiaTrifasica ? 'Sí' : 'No',
+    "Acceso Camión": r.property.caracteristicasOperativas?.accesoCamion ? 'Sí' : 'No',
+    "Faltantes": (r.property.requisitosFaltantes || []).length
   }));
 
   const tradeoffs = scored.slice(1).map((r) =>
-    `${r.property.titulo}: ${r.advertencias[0] || 'Opción viable, pero con menor compatibilidad.'}`
+    `**${r.property.titulo}**: ${r.advertencias[0] || 'Opción viable, pero con menor compatibilidad.'}`
   );
 
   const finalRecommendation =
@@ -369,7 +368,7 @@ export function aiCompare(query, properties) {
 
   return {
     recommendedPropertyId: best.property.id,
-    decisionSummary: `Analizadas ${scored.length} propiedades. Recomendación clara: "${best.property.titulo}".`,
+    decisionSummary: `Analizadas ${scored.length} propiedades. Recomendación clara: "${best.property.titulo}" en ${best.property.zona}.`,
     comparisonTable,
     tradeoffs,
     finalRecommendation,
