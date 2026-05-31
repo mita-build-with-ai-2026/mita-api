@@ -1,9 +1,11 @@
 import dotenv from 'dotenv';
 
-// Cargar variables de entorno del archivo .env
-dotenv.config();
+// Solo cargar variables de entorno del archivo .env si no estamos en Vercel
+if (!process.env.VERCEL) {
+  dotenv.config();
+}
 
-const requiredEnvVars = ['PORT', 'NODE_ENV', 'JWT_SECRET', 'DATABASE_URL'];
+const requiredEnvVars = ['NODE_ENV', 'JWT_SECRET', 'DATABASE_URL'];
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
 if (missingEnvVars.length > 0) {

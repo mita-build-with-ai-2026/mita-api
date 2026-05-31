@@ -4,7 +4,10 @@
 import { db } from '../config/db.js';
 
 function buildWhatsappUrl(phone, message) {
-  const cleaned = phone.replace(/[^0-9+]/g, '');
+  let cleaned = phone.replace(/[^0-9]/g, '');
+  if (cleaned.length === 8) {
+    cleaned = '591' + cleaned;
+  }
   const encoded = encodeURIComponent(message);
   return `https://wa.me/${cleaned}?text=${encoded}`;
 }

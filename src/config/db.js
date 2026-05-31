@@ -333,7 +333,17 @@ export const db = {
   },
 
   async getAllProperties() {
-    const res = await pool.query('SELECT * FROM "Propiedad"');
+    const res = await pool.query(`
+      SELECT 
+        id, titulo, descripcion, "tipoPropiedad", "tipoUsoEspacio", ciudad, zona, "direccionTexto",
+        latitud, longitud, precio, moneda, "precioBs", "cantidadHabitaciones", "cantidadBanos", "areaM2",
+        "tieneGaraje", "estaAmoblada", "aceptaMascotas", "expensasIncluidas", "montoExpensas",
+        comodidades, "aptoPara", "caracteristicasOperativas", "requisitosFaltantes",
+        "nombreContacto", "telefonoContacto", "idFuente", "idImportacion", "urlFuente",
+        "idExternoFuente", "hashFuente", "urlImagen", estado, "creadaEn", "actualizadaEn"
+      FROM "Propiedad"
+      WHERE estado = 'ACTIVA'
+    `);
     return res.rows;
   },
 
