@@ -54,7 +54,7 @@ const DEMO_SCENARIOS = [
     accion: 'comparar',
     payload: {
       query: '¿Cuál me conviene más si quiero abrir una cafetería pequeña y necesito buena visibilidad?',
-      propertyIds: ['prop-001', 'prop-005'],
+      propertyIds: ['00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000005'],
     },
     endpoint: 'POST /api/ai/compare',
   },
@@ -64,7 +64,7 @@ const DEMO_SCENARIOS = [
     descripcion: 'El usuario genera un lead para contactar al propietario.',
     accion: 'lead',
     payload: {
-      propertyId: 'prop-001',
+      propertyId: '00000000-0000-0000-0000-000000000001',
       origen: 'WHATSAPP_CLICK',
     },
     endpoint: 'POST /api/leads',

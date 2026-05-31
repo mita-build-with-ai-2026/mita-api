@@ -14,5 +14,197 @@
     "tipoFuente": "FACEBOOK",
     "activo": true,
     "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 3,
+    "nombre": "InfoCasas Bolivia - Santa Cruz alquileres",
+    "urlBase": "https://www.infocasas.com.bo/alquiler/inmuebles/santa-cruz",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 4,
+    "nombre": "InfoCasas Bolivia - locales comerciales",
+    "urlBase": "https://www.infocasas.com.bo/alquiler/locales-comerciales/santa-cruz",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 5,
+    "nombre": "InfoCasas Bolivia - oficinas",
+    "urlBase": "https://www.infocasas.com.bo/alquiler/oficinas/santa-cruz",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 6,
+    "nombre": "InfoCasas Bolivia - local industrial o galpon",
+    "urlBase": "https://www.infocasas.com.bo/alquiler/local-industrial-o-galpon/santa-cruz",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 7,
+    "nombre": "UltraCasas Bolivia",
+    "urlBase": "https://www.ultracasas.com/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 8,
+    "nombre": "RE/MAX Bolivia",
+    "urlBase": "https://www.remax.bo/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 9,
+    "nombre": "Century 21 Global - Santa Cruz alquileres",
+    "urlBase": "https://www.century21global.com/es/l/homes-for-rent/Bolivia%2CSanta-Cruz",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 10,
+    "nombre": "Hogaria Bolivia",
+    "urlBase": "https://hogaria.com/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 11,
+    "nombre": "Aqui.com.bo Inmuebles",
+    "urlBase": "https://aqui.com.bo/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 12,
+    "nombre": "Yumblin Bolivia - oficinas Santa Cruz",
+    "urlBase": "https://www.yumblin.com/bo/clasificados/galeria/bolivia/santa-cruz/alquiler/oficinas",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 13,
+    "nombre": "Agente Inmobiliario Bolivia",
+    "urlBase": "https://agenteinmobiliario.com.bo/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 14,
+    "nombre": "BuscoCasita Bolivia",
+    "urlBase": "https://bolivia.buscocasita.com/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 15,
+    "nombre": "Cari Casas Bolivia - alquiler Santa Cruz",
+    "urlBase": "https://casas.caribolivia.com/casas/alquiler-santa-cruz",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 16,
+    "nombre": "Santa Cruz Bienes Raices",
+    "urlBase": "https://santacruzbienesraices.com/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 17,
+    "nombre": "El Deber Clasificados",
+    "urlBase": "https://eldeber.com.bo/clasificados/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 18,
+    "nombre": "BCP Bolivia - Bienes adjudicados y remates",
+    "urlBase": "https://www.bcp.com.bo/BienesAdjudicados/Remates",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 19,
+    "nombre": "BCP Bolivia - Remates Santa Cruz",
+    "urlBase": "https://www.bcp.com.bo/BienesAdjudicados/Remates?dep=santa+cruz",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 20,
+    "nombre": "BNB - Bienes adjudicados",
+    "urlBase": "https://www.bnb.com.bo/PortalBNB/Servicios/BienesAdjudicadosMenu",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 21,
+    "nombre": "Banco BISA - Bienes adjudicados",
+    "urlBase": "https://www.bisa.com/bienes-adjudicados",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 22,
+    "nombre": "Banco FIE - Bienes adjudicados",
+    "urlBase": "https://www.bancofie.com.bo/bienes-adjudicados",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 23,
+    "nombre": "Banco Ecofuturo - Bienes adjudicados",
+    "urlBase": "https://www.bancoecofuturo.com.bo/BienesRemates/BienesAdjudicados",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 24,
+    "nombre": "Banco Ganadero - Aviso de remates",
+    "urlBase": "https://www.bg.com.bo/aviso-de-remates/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 25,
+    "nombre": "BDP Bolivia - Bienes adjudicados",
+    "urlBase": "https://www.bdp.com.bo/bienes-adjudicados/",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
+  },
+  {
+    "id": 26,
+    "nombre": "BMG - Bienes adjudicados y servicios",
+    "urlBase": "https://bmg.com.bo/bienesadjudicados",
+    "tipoFuente": "PORTAL",
+    "activo": true,
+    "creadoEn": "2026-05-30T18:18:45.165Z"
   }
 ]

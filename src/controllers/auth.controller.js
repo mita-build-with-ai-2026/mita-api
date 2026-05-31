@@ -29,7 +29,7 @@ function verifyPassword(plain, storedHash) {
   return expectedHash === actualHash;
 }
 
-export const login = (req, res, next) => {
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -37,7 +37,7 @@ export const login = (req, res, next) => {
       return res.status(400).json({ status: 'error', message: 'Email y contraseña son requeridos.' });
     }
 
-    const admin = db.findAdminByEmail(email);
+    const admin = await db.findAdminByEmail(email);
     if (!admin) {
       return res.status(401).json({ status: 'error', message: 'Credenciales inválidas.' });
     }
@@ -48,8 +48,8 @@ export const login = (req, res, next) => {
 
     const token = createToken({ id: admin.id, email: admin.email, rol: admin.rol });
 
-    // Actualizar último acceso
-    db.findAdminById(admin.id); // ya cargado
+    // Actualizar último acceso (ejecutar async de fondo o await)
+    await db.findAdminById(admin.id); 
 
     res.status(200).json({
       accessToken: token,

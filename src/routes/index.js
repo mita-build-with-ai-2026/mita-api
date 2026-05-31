@@ -5,8 +5,8 @@ import { getStatus } from '../controllers/status.controller.js';
 import { login, me } from '../controllers/auth.controller.js';
 import { getZones, getSearchExamples } from '../controllers/metadata.controller.js';
 import { listProperties, getPropertyById, createProperty, patchProperty } from '../controllers/property.controller.js';
-import { listSources, listImports, runImport } from '../controllers/import.controller.js';
-import { search, compare, enhanceListing } from '../controllers/ai.controller.js';
+import { listSources, listImports, runImport, autoDiscoverAndImport } from '../controllers/import.controller.js';
+import { search, compare, enhanceListing, discoverSources, analyzeUrls } from '../controllers/ai.controller.js';
 import { reindex, ragSearchEndpoint } from '../controllers/rag.controller.js';
 import { createLead, listLeads } from '../controllers/lead.controller.js';
 import { getScenarios } from '../controllers/demo.controller.js';
@@ -39,11 +39,14 @@ router.patch('/api/properties/:propertyId', requireAuth, patchProperty);
 router.get('/api/sources', requireAuth, listSources);
 router.get('/api/imports', requireAuth, listImports);
 router.post('/api/imports/run', requireAuth, runImport);
+router.post('/api/imports/auto-discover-and-import', requireAuth, autoDiscoverAndImport);
 
 // --- AI ---
 router.post('/api/ai/search', search);
 router.post('/api/ai/compare', compare);
 router.post('/api/ai/enhance-listing', requireAuth, enhanceListing);
+router.post('/api/ai/discover-sources', requireAuth, discoverSources);
+router.post('/api/ai/analyze-urls', requireAuth, analyzeUrls);
 
 // --- RAG ---
 router.post('/api/rag/reindex', requireAuth, reindex);

@@ -201,7 +201,7 @@ export function scoreProperty(property, criteria) {
   maxScore += 25;
   if (criteria.tipoPropiedad && property.tipoPropiedad === criteria.tipoPropiedad) {
     score += 25;
-    razones.push(`✓ Tipo de espacio coincide: ${property.tipoPropiedad.replace(/_/g, ' ').toLowerCase()}`);
+    razones.push(`Tipo de espacio coincide: ${property.tipoPropiedad.replace(/_/g, ' ').toLowerCase()}`);
   } else if (!criteria.tipoPropiedad) {
     score += 15; // sin criterio explícito, puntuación parcial
   } else {
@@ -215,7 +215,7 @@ export function scoreProperty(property, criteria) {
       const pctBudget = property.precio / criteria.precioMaximo;
       const pts = Math.round(25 * (1 - pctBudget * 0.3)); // más barato = más puntos
       score += Math.max(15, pts);
-      razones.push(`✓ Precio dentro del presupuesto: $${property.precio} ${property.moneda} (máximo $${criteria.precioMaximo})`);
+      razones.push(`Precio dentro del presupuesto: $${property.precio} ${property.moneda} (máximo $${criteria.precioMaximo})`);
     } else {
       const exceso = Math.round(((property.precio - criteria.precioMaximo) / criteria.precioMaximo) * 100);
       advertencias.push(`El precio ($${property.precio}) supera el presupuesto en un ${exceso}%.`);
@@ -231,7 +231,7 @@ export function scoreProperty(property, criteria) {
     const match = criteria.zonas.some((z) => propZonaNorm.includes(normalizeText(z)));
     if (match) {
       score += 20;
-      razones.push(`✓ Zona coincide: ${property.zona}`);
+      razones.push(`Zona coincide: ${property.zona}`);
     } else {
       advertencias.push(`La zona (${property.zona}) no es la zona preferida de la búsqueda.`);
       score += 5; // algo de puntos por ser activa igualmente
@@ -245,7 +245,7 @@ export function scoreProperty(property, criteria) {
   if (criteria.areaM2 && property.areaM2) {
     if (property.areaM2 >= criteria.areaM2) {
       score += 10;
-      razones.push(`✓ Tamaño suficiente: ${property.areaM2}m² (mínimo requerido: ${criteria.areaM2}m²)`);
+      razones.push(`Tamaño suficiente: ${property.areaM2}m² (mínimo requerido: ${criteria.areaM2}m²)`);
     } else {
       advertencias.push(`El espacio (${property.areaM2}m²) es menor al mínimo buscado (${criteria.areaM2}m²).`);
     }
@@ -266,7 +266,7 @@ export function scoreProperty(property, criteria) {
       opMax++;
       if (opProp[feat] === true) {
         opScore++;
-        razones.push(`✓ Característica presente: ${feat}`);
+        razones.push(`Característica presente: ${feat}`);
       } else if (opProp[feat] === null || opProp[feat] === undefined) {
         advertencias.push(`No se confirma si tiene: ${feat}.`);
         informacionFaltante.push(feat);
@@ -286,7 +286,7 @@ export function scoreProperty(property, criteria) {
     const match = criteria.aptoPara.some((a) => propAptNorm.some((b) => b.includes(normalizeText(a)) || normalizeText(a).includes(b)));
     if (match) {
       score += 10;
-      razones.push(`✓ Espacio apto para: ${criteria.aptoPara.join(', ')}`);
+      razones.push(`Espacio apto para: ${criteria.aptoPara.join(', ')}`);
     }
   } else {
     score += 5;
@@ -305,7 +305,7 @@ export function scoreProperty(property, criteria) {
     advertencias,
     informacionFaltante: [...new Set(informacionFaltante)],
     recomendacion: puntaje >= 80 ? 'Muy recomendado' : puntaje >= 60 ? 'Recomendado con observaciones' : 'Revisar con cautela',
-    etiquetaCorta: puntaje >= 85 ? '🔥 Mejor match' : puntaje >= 70 ? '✅ Buen match' : '⚠️ Match parcial',
+    etiquetaCorta: puntaje >= 85 ? 'Mejor match' : puntaje >= 70 ? 'Buen match' : 'Match parcial',
   };
 }
 
@@ -313,7 +313,7 @@ function generateMatchSummary(property, criteria, puntaje, razones, advertencias
   const lines = [];
   lines.push(`Este espacio en ${property.zona} tiene un ${puntaje}% de compatibilidad con tu búsqueda.`);
   if (razones.length > 0) {
-    lines.push(`Encaja porque: ${razones.slice(0, 2).map((r) => r.replace(/^✓\s*/, '')).join('; ')}.`);
+    lines.push(`Encaja porque: ${razones.slice(0, 2).join('; ')}.`);
   }
   if (advertencias.length > 0) {
     lines.push(`Puntos a verificar: ${advertencias[0]}`);
@@ -365,7 +365,7 @@ export function aiCompare(query, properties) {
 
   const finalRecommendation =
     `Basado en tu búsqueda "${query}", la mejor opción es "${best.property.titulo}" en ${best.property.zona} ` +
-    `con un ${best.puntajeCoincidencia}% de compatibilidad. ${best.razones.slice(0, 2).map((r) => r.replace(/^✓\s*/, '')).join('. ')}.`;
+    `con un ${best.puntajeCoincidencia}% de compatibilidad. ${best.razones.slice(0, 2).join('. ')}.`;
 
   return {
     recommendedPropertyId: best.property.id,
@@ -437,17 +437,17 @@ export function aiEnhanceListing(rawText) {
   });
 
   const versionWhatsapp =
-    `🏢 *${titulo}*\n` +
-    (precio ? `💰 $${precio} USD/mes\n` : '') +
-    (areaM2 ? `📐 ${areaM2}m²\n` : '') +
-    `📍 ${zonaTxt}\n` +
-    (aptoPara.length ? `✅ Ideal para: ${aptoPara.join(', ')}\n` : '') +
-    `📞 Consultas por WhatsApp`;
+    `*${titulo}*\n` +
+    (precio ? `$${precio} USD/mes\n` : '') +
+    (areaM2 ? `${areaM2}m²\n` : '') +
+    `${zonaTxt}\n` +
+    (aptoPara.length ? `Ideal para: ${aptoPara.join(', ')}\n` : '') +
+    `Consultas por WhatsApp`;
 
   const versionFacebook =
-    `🔑 SE ALQUILA: ${titulo}\n\n` +
+    `SE ALQUILA: ${titulo}\n\n` +
     descripcionLimpia +
-    `\n\n📲 Contactar por WhatsApp para más información.`;
+    `\n\nContactar por WhatsApp para más información.`;
 
   return {
     titulo,
